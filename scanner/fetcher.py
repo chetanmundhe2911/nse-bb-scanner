@@ -20,6 +20,15 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
+# Suppress connection pool warnings from parallel Yahoo Finance requests
+import urllib3
+urllib3.disable_warnings()
+logging.getLogger("urllib3").setLevel(logging.ERROR)
+
+# Increase connection pool size for parallel requests
+from requests.adapters import HTTPAdapter
+_ADAPTER = HTTPAdapter(pool_connections=50, pool_maxsize=50)
+
 UPSTOX_TOKEN     = os.environ.get("UPSTOX_TOKEN", "")
 UPSTOX_HIST_URL  = "https://api.upstox.com/v2/historical-candle/{key}/day/{to}/{frm}"
 UPSTOX_INST_URL  = "https://assets.upstox.com/market-quote/instruments/exchange/complete.json.gz"
@@ -138,6 +147,7 @@ def _get_yf_session():
     if _YF_SESSION is not None:
         return _YF_SESSION
     session = requests.Session()
+    session.mount("https://", _ADAPTER)
     session.headers.update({
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
         "Referer": "https://finance.yahoo.com/",
