@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.env
+logs/
+data/signals_*.json
+scanner/.nse_equity_cache.csv
+*.zip
+.DS_Store
