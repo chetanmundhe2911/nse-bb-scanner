@@ -17,6 +17,8 @@ import argparse
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+from dotenv import load_dotenv
+load_dotenv()
 from scanner.stocks import get_universe
 from scanner.fetcher import fetch_stock_data, preload_instrument_map, UPSTOX_TOKEN
 from scanner.signal import compute_signal
